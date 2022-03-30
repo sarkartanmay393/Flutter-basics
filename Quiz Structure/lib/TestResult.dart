@@ -31,8 +31,17 @@ class TestResult extends StatelessWidget {
             textAlign: TextAlign.center,
 
           ),
-          FlatButton(child: Text("‣ RESET",
-                style: TextStyle(fontWeight: FontWeight.bold,),),
+          OutlinedButton(
+            child: Text(score.toString()),
+            style: OutlinedButton.styleFrom(
+              primary: Colors.black,
+              shadowColor: Colors.blue,
+
+            ),
+          ),
+          TextButton(
+            child: Text("‣ RESET"),
+            style: TextButton.styleFrom(primary: Colors.blue),
             onPressed: _resetHandler,),
 
         ],
