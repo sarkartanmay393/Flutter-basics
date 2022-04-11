@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
-        ),
+        ), // used appbar variable.
       ),
     );
   }
@@ -118,36 +118,35 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final appBar = AppBar(
+      title: Text("PERSONAL EXPENSES"),
+      actions: [
+        IconButton(
+          onPressed: () => _StartTheProcessofAddNewTx(context),
+          icon: Icon(Icons.add),
+        ),
+      ],
+    );
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text("PERSONAL EXPENSES"),
-        actions: [
-          IconButton(
-            onPressed: () => _StartTheProcessofAddNewTx(context),
-            icon: Icon(Icons.add),
-          ),
-        ],
-      ),
+      appBar: appBar,
       body: Column(
+        
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Container(
-          //   width: double.infinity,
-          //   child: Card(
-          //     margin: EdgeInsets.all(5),
-          //     color: Theme.of(context).primaryColor,
-          //     child: Text(
-          //       "CHART !",
-          //       textAlign: TextAlign.center,
-          //       style:
-          //           TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          //     ),
-          //     elevation: 3,
-          //   ),
-          // ),
-          Chart(_recentTx),
-          Expanded(child: transactions(_userTransactionsList, _deleteTx)),
+          Container(
+              height: (MediaQuery.of(context).size.height -
+                      appBar.preferredSize.height -
+                      MediaQuery.of(context).padding.top) *
+                  0.23,
+              child: Chart(_recentTx)),
+          Container(
+              height: (MediaQuery.of(context).size.height -
+                      appBar.preferredSize.height -
+                      MediaQuery.of(context).padding.top) *
+                  0.77,
+              child: transactions(_userTransactionsList, _deleteTx)),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
