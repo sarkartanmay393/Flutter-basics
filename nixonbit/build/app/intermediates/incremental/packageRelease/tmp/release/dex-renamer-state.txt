@@ -1,0 +1,4 @@
+#Wed Apr 13 23:59:05 IST 2022
+base.0=/Users/tanmaysarkar/Documents/Projects/nixonbit/build/app/intermediates/dex/release/minifyReleaseWithR8/classes.dex
+renamed.0=classes.dex
+path.0=classes.dex
