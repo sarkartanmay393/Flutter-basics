@@ -6,6 +6,7 @@ class transactions extends StatelessWidget {
   // Transaction list database.
   final List<Transaction> transactionslistClone;
   Function _deleteTx;
+
   transactions(this.transactionslistClone, this._deleteTx);
 
   @override
@@ -20,9 +21,9 @@ class transactions extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 20),
               Container(
-                height: 200,
+                height: MediaQuery.of(context).size.height * 0.3,
                 child: Image.asset(
                   'assets/images/waiting.png',
                   fit: BoxFit.cover,
@@ -58,12 +59,18 @@ class transactions extends StatelessWidget {
                       )),
                   subtitle: Text(
                       "${DateFormat.yMMMd().format(transactionslistClone[index].date)}"),
-                  trailing: IconButton(
-                    onPressed: () =>
-                        _deleteTx(transactionslistClone[index].id),
-                    icon: Icon(Icons.delete_outline_outlined),
-                    color: Theme.of(context).errorColor,
-                  ),
+                  trailing: MediaQuery.of(context).size.width > 420
+                      ? TextButton.icon(
+                          onPressed: () =>
+                              _deleteTx(transactionslistClone[index].id),
+                          icon: Icon(Icons.delete_outline_outlined),
+                          label: Text("Delete"))
+                      : IconButton(
+                          onPressed: () =>
+                              _deleteTx(transactionslistClone[index].id),
+                          icon: Icon(Icons.delete_outline_outlined),
+                          color: Theme.of(context).errorColor,
+                        ),
                 ),
               );
             },
