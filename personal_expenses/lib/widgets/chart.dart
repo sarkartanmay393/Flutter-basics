@@ -1,8 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/Transaction.dart';
 import './chart_bar.dart';
-import 'dart:ui';
 
 class Chart extends StatelessWidget {
   List<Transaction> recentTx;

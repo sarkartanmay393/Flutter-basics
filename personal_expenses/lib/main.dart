@@ -89,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // new transactions will be added to this reference list.
   ];
 
-  void _addNewTransaction({String txTitle, double txPrice, DateTime txDate}) {
+  void _addNewTransaction({@required String txTitle, @required double txPrice, @required DateTime txDate}) {
     final txNew = Transaction(
       title: txTitle,
       price: txPrice,
