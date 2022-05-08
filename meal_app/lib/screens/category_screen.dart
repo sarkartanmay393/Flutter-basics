@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
-import '../theme.dart';
 
 import '../dummy-data.dart';
 import '../widgets/category_item.dart';
 
 class categoryScreen extends StatelessWidget {
 
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: universal_appbar,
-      body: GridView(
+    return GridView(
         padding: EdgeInsets.all(15),
         children: DUMMY_CATEGORIES.map(
               (catData) => category_item(
@@ -26,7 +22,6 @@ class categoryScreen extends StatelessWidget {
           crossAxisSpacing: 20,
           mainAxisSpacing: 30,
         ),
-      ),
     );
   }
 }

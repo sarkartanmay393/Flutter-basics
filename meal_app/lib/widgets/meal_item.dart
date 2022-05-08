@@ -11,17 +11,27 @@ class meal_item extends StatelessWidget {
   final Complexity complexity;
   final Affordability affordability;
   final int duration;
+  final Function removeItem;
 
-  meal_item({
-      this.title,
+  meal_item(
+      {this.title,
       this.id,
       this.imageUrl,
       this.complexity,
       this.affordability,
-      this.duration});
+      this.duration,
+      this.removeItem});
 
   void getintorecipe(BuildContext ctx) {
-    Navigator.of(ctx).pushNamed(recipe_screen.routeName, arguments: id);
+    Navigator.of(ctx).pushNamed(recipe_screen.routeName, arguments: {
+      'id': id,
+      'complexity': complexityText,
+      'affordability': affordabilityText
+    }).then((meal_id) {
+      if(meal_id != null) {
+        removeItem(meal_id);
+      }
+    });
   }
 
   String get complexityText {
@@ -86,7 +96,7 @@ class meal_item extends StatelessWidget {
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 18,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.bold,
                     ),
                     softWrap: true,
                     overflow: TextOverflow.fade,
