@@ -1,0 +1,4 @@
+#Thu Apr 21 20:17:16 IST 2022
+base.0=/Users/tanmaysarkar/Documents/Projects/Flutter-basics/personal_expenses/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
+renamed.0=classes.dex
+path.0=classes.dex
