@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/providers/cart-provider.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/auth-provider.dart';
+import '../providers/cart-provider.dart';
 import '../providers/product-provider.dart';
 import '../screens/ProductDetailsScreen.dart';
 
@@ -14,6 +15,7 @@ class _product_cardState extends State<product_card> {
   @override
   Widget build(BuildContext context) {
     final data = Provider.of<Product>(context, listen: false);
+    final authData = Provider.of<Auth>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
       child: GridTile(
@@ -22,10 +24,12 @@ class _product_cardState extends State<product_card> {
             Navigator.of(context)
                 .pushNamed(ProductDetailsScreen.routeName, arguments: data.id);
           },
-          child: Image.network(
-            data.imageUrl,
-            height: 500,
-            fit: BoxFit.cover,
+          child: Hero(
+            tag: data.id,
+            child: FadeInImage(
+                placeholder: AssetImage('assets/images/products-placeholder.png'),
+                image: NetworkImage(data.imageUrl),
+            ),
           ),
         ),
         footer: GridTileBar(
@@ -42,8 +46,9 @@ class _product_cardState extends State<product_card> {
           ),
           leading: Consumer<Product>(
             // this favorite icon button will only update if data changes in database.
-            builder: (context, data, child) => IconButton(
-              onPressed: data.toggleFavorite,
+            builder: (ctx, data, child) => IconButton(
+              onPressed: () =>
+                  data.toggleFavorite(authData.token, authData.userId),
               icon: Icon(
                   data.isFavorite ? Icons.favorite : Icons.favorite_border),
             ),

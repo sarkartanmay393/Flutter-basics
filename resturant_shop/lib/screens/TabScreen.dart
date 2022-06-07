@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/providers/products-provider.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/products-provider.dart';
 import '../providers/cart-provider.dart';
 import '../screens/CartScreen.dart';
 import '../widgets/badge.dart';
@@ -10,7 +10,6 @@ import '../widgets/home.dart';
 import '../widgets/categories.dart';
 import '../widgets/offers.dart';
 import '../widgets/wallet.dart';
-import '../widgets/favorite.dart';
 
 enum PopupItemValue {
   favorites,
@@ -19,7 +18,7 @@ enum PopupItemValue {
 }
 
 class TabScreen extends StatefulWidget {
-  static const routeName = "/";
+  static const routeName = "tabScreen";
 
   @override
   State<TabScreen> createState() => _TabScreenState();
@@ -30,6 +29,7 @@ class _TabScreenState extends State<TabScreen> {
   int _pageIndex = 0;
 
   var _isLoading = false;
+  var _fetched = false;
 
   @override
   void initState() {
@@ -47,22 +47,21 @@ class _TabScreenState extends State<TabScreen> {
     setState(() {
       _isLoading = true;
     });
-    Provider.of<Products>(context, listen: false).fetchAndSetData().then((value) {
-      setState(() {
-        _isLoading = false;
-      });
-    });
+    Provider.of<Products>(context, listen: false).fetchAndSetData().then((_) =>
+        setState(() {
+          _isLoading = false;
+        })
+    );
     super.didChangeDependencies();
   }
 
+
   void tabSelectionHandler(int value) {
     setState(() {
-      _favoritePageViewing = false;
       _pageIndex = value;
     });
   }
 
-  var _favoritePageViewing = false;
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +75,8 @@ class _TabScreenState extends State<TabScreen> {
         actions: [
           PopupMenuButton(
             icon: Icon(Icons.account_circle),
-            itemBuilder: (_) => [
+            itemBuilder: (_) =>
+            [
               PopupMenuItem(
                   child: Text("Account"), value: PopupItemValue.my_account),
               PopupMenuItem(
@@ -84,23 +84,24 @@ class _TabScreenState extends State<TabScreen> {
             ],
           ),
           Consumer<Cart>(
-            builder: (_, cart, child) => Badge(
-              value: cart.cartItemsCount,
-              child: IconButton(
-                icon: Icon(Icons.shopping_cart),
-                onPressed: () {
-                  Navigator.of(context).pushNamed(CartScreen.routeName);
-                },
-              ),
-            ),
+            builder: (_, cart, child) =>
+                Badge(
+                  value: cart.cartItemsCount,
+                  child: IconButton(
+                    icon: Icon(Icons.shopping_cart),
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(CartScreen.routeName);
+                    },
+                  ),
+                ),
           ),
         ],
       ),
       drawer: MainDrawer(),
       body: _isLoading
           ? Center(
-              child: CircularProgressIndicator(),
-            )
+        child: CircularProgressIndicator(),
+      )
           : _pages[_pageIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: tabSelectionHandler,

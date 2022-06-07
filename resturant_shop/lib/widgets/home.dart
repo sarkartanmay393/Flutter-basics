@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/auth-provider.dart';
+import '../providers/product-provider.dart';
 import '../providers/products-provider.dart';
 
 import './product-card.dart';
@@ -29,7 +31,6 @@ class Home extends StatelessWidget {
             ),
           ),
           Container(
-            height: 270,
             width: double.infinity,
             child: GridView.builder(
               padding: const EdgeInsets.all(8.0),
@@ -41,41 +42,11 @@ class Home extends StatelessWidget {
                   childAspectRatio: 3 / 2,
                   crossAxisSpacing: 7.0,
                   mainAxisSpacing: 7.0),
-              itemCount: products.length,
+              itemCount: products.length, // < 5 ? products.length : 4,
               itemBuilder: (context, index) => ChangeNotifierProvider.value(
                   value: products[index], child: product_card()),
             ),
           ),
-          Divider(),
-          Padding(
-            padding: const EdgeInsets.all(3.0),
-            child: Text(
-              "All Products",
-              // style: Theme.of(context).textTheme.titleMedium,
-              style: TextStyle(
-                fontFamily: "SourceSans Pro",
-                color: Colors.black,
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Container(
-            height: 270,
-            child: ListView.builder(
-              itemBuilder: (_, i) => ListTile(
-                  title: Text(
-                    products[i].title,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(products[i].imageUrl),
-                  ),
-                  subtitle: Text("\$${products[i].price}"),
-              ),
-              itemCount: products.length,
-            ),
-          )
         ],
       ),
     );

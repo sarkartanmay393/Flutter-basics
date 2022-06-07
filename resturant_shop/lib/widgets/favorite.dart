@@ -22,33 +22,41 @@ class _FavoriteState extends State<Favorite> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-                child: Text("Favorites",
-                    style:
-                        TextStyle(fontSize: 22, fontWeight: FontWeight.bold))),
-          ),
-          Container(
-            width: double.infinity,
-            child: GridView.builder(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
               padding: const EdgeInsets.all(8.0),
-              scrollDirection: Axis.vertical,
-              //physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 3 / 2,
-                  crossAxisSpacing: 7.0,
-                  mainAxisSpacing: 7.0),
-              itemCount: products.length,
-              itemBuilder: (context, index) => ChangeNotifierProvider.value(
-                  value: products[index], child: product_card()),
+              child: Center(
+                  child: Text("Favorites",
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold))),
             ),
-          ),
-        ],
+            Container(
+              height: MediaQuery.of(context).size.height,
+              child: ListView.builder(
+                itemBuilder: (_, i) => Column(
+                  children: [
+                    ListTile(
+                      title: Text(
+                        products[i].title,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        backgroundImage: NetworkImage(products[i].imageUrl),
+                        // backgroundImage: NetworkImage(products[i].imageUrl),
+                      ),
+                      subtitle: Text("\$${products[i].price}"),
+                    ),
+                    Divider(),
+                  ],
+                ),
+                itemCount: products.length,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

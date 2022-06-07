@@ -20,41 +20,42 @@ class _OrderItemViewState extends State<OrderItemView> {
 
   Widget build(BuildContext context) {
     final OrderProviderData = Provider.of<Order>(context);
-    return Card(
-      margin: EdgeInsets.all(5),
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(
-              "\$${OrderProviderData.OrderList[widget.OrderIndex].TotalAmount}",
-              style: TextStyle(fontWeight: FontWeight.w600),
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 250),
+      curve: Curves.linear,
+      height: _expanded ? min(OrderProviderData.OrderList.length * 20.0 + 85, 300) : 85,
+      child: Card(
+        margin: EdgeInsets.all(5),
+        child: Column(
+          children: [
+            ListTile(
+              title: Text(
+                "\$${(OrderProviderData.OrderList[widget.OrderIndex].TotalAmount).toStringAsFixed(2)}",
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              subtitle: Text(
+                "${DateFormat('dd/MM/yyyy hh:mm').format(OrderProviderData.OrderList[widget.OrderIndex].dateTime)}",
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              trailing: IconButton(
+                icon: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
+                onPressed: () {
+                  setState(() {
+                    _expanded = !_expanded;
+                  });
+                },
+              ),
             ),
-            subtitle: Text(
-              "${DateFormat('dd/MM/yyyy hh:mm').format(OrderProviderData.OrderList[widget.OrderIndex].dateTime)}",
-              style: TextStyle(fontWeight: FontWeight.w600),
-            ),
-            trailing: IconButton(
-              icon: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
-              onPressed: () {
-                setState(() {
-                  _expanded = !_expanded;
-                });
-              },
-            ),
-          ),
-          if (_expanded)
-            Container(
-              height: min(OrderProviderData
-                  .OrderList[widget.OrderIndex].CartItemList.length * 20.0 + 0, 200),
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              //padding: EdgeInsets.all(2.0),
+            AnimatedContainer(
+              duration: Duration(milliseconds: 250),
+              height: _expanded ? min(OrderProviderData.OrderList.length * 20.0, 180) : 0,
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               child: ListView.builder(
                   itemBuilder: (ctx, index) => Row(children: [
                         Text(
                           "${OrderProviderData.OrderList[widget.OrderIndex].CartItemList[index].title}",
                           style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87),
+                              fontWeight: FontWeight.bold, color: Colors.black87),
                         ),
                         Spacer(),
                         Text(
@@ -66,7 +67,8 @@ class _OrderItemViewState extends State<OrderItemView> {
                   itemCount: OrderProviderData
                       .OrderList[widget.OrderIndex].CartItemList.length),
             ),
-        ],
+          ],
+        ),
       ),
     );
   }

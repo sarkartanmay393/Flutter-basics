@@ -46,6 +46,11 @@ class Products with ChangeNotifier {
     // ),
   ];
 
+  String authToken;
+  String userId;
+
+  Products(this.userId, this.authToken, this._items);
+
   List<Product> get items {
     return [..._items];
   }
@@ -54,21 +59,31 @@ class Products with ChangeNotifier {
     return [..._items.where((item) => item.isFavorite == true)];
   }
 
-  Future<void> fetchAndSetData() async {
-    final url = Uri.parse(
-        'https://shop-app-82853-default-rtdb.asia-southeast1.firebasedatabase.app/products.json');
+  Future<void> fetchAndSetData([bool filterByUser = false]) async {
+    final filterString =
+        filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
+    var url = Uri.parse(
+        'https://shop-app-82853-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$authToken&$filterString');
     try {
       final response = await http.get(url);
-      final extractedData = json.decode(response.body) as Map<String, dynamic>;
-      List<Product> loadedProducts = [];
+      final extractedData = json.decode(response.body) as Map<String, dynamic>; // we have all products data here on the run from TabScreen.
+      if (extractedData == null) {
+        return;
+      }
+      url = Uri.parse(
+          "https://shop-app-82853-default-rtdb.asia-southeast1.firebasedatabase.app/favoritesByUser/$userId.json?auth=$authToken");
+      final favoriteResponse = await http.get(url);
+      final favoriteData = json.decode(favoriteResponse.body);
+      final List<Product> loadedProducts = [];
       extractedData.forEach((productId, productData) {
         loadedProducts.add(Product(
           id: productId,
           title: productData['title'],
           description: productData['description'],
           imageUrl: productData['imageUrl'],
-          isFavorite: productData['isFavorite'],
           price: productData['price'],
+          isFavorite:
+              favoriteData == null ? false : favoriteData[productId] ?? false,
         ));
       });
       _items = loadedProducts;
@@ -81,7 +96,7 @@ class Products with ChangeNotifier {
 
   Future<void> addProduct(Product item) async {
     final url = Uri.parse(
-        'https://shop-app-82853-default-rtdb.asia-southeast1.firebasedatabase.app/products.json');
+        'https://shop-app-82853-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$authToken');
     try {
       final response = await http.post(url,
           body: json.encode({
@@ -89,7 +104,7 @@ class Products with ChangeNotifier {
             'description': item.description,
             'price': item.price,
             'imageUrl': item.imageUrl,
-            'isFavorite': item.isFavorite,
+            'creatorId': userId, // this is only used here.
           }));
       _items.add(Product(
         title: item.title,
@@ -98,7 +113,6 @@ class Products with ChangeNotifier {
         description: item.description,
         imageUrl: item.imageUrl,
         category: item.category,
-        isFavorite: item.isFavorite,
       ));
       notifyListeners();
     } catch (error) {
@@ -111,7 +125,7 @@ class Products with ChangeNotifier {
     int specifiedIndex =
         _items.indexWhere((item) => item.id == existingItem.id);
     final url = Uri.parse(
-        'https://shop-app-82853-default-rtdb.asia-southeast1.firebasedatabase.app/products/${existingItem.id}.json');
+        'https://shop-app-82853-default-rtdb.asia-southeast1.firebasedatabase.app/products/${existingItem.id}.json?auth=$authToken');
     try {
       await http.patch(url,
           body: json.encode({
@@ -136,7 +150,7 @@ class Products with ChangeNotifier {
 
   Future<void> deleteProduct(String id) async {
     final url = Uri.parse(
-        'https://shop-app-82853-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json');
+        'https://shop-app-82853-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json?auth=$authToken');
     final indexForRevert = _items.indexWhere((prod) => prod.id == id);
     var backupForRevert = _items[indexForRevert];
     _items.removeAt(indexForRevert);
